@@ -5,18 +5,19 @@ from matplotlib import animation
 class GameOfLife(object):
 
     def __init__(self, **kwargs):
-        self.figure, self.axis = plt.subplots()
-        self.on = 255
+        self.on = 1
         self.off = 0
+        self.figure, self.axis = plt.subplots()
+        plt.title('John Conway --- Game of Life')
 
     def __random_grid(self, n):
         return np.random.choice([self.off,self.on], n*n, p=[0.3, 0.7]).reshape(n, n)
 
     def compute_total(self, grid, i , j, n):
-        return int((grid[i, (j-1)%n] + grid[i, (j+1)%n] +
-                    grid[(i-1)%n, j] + grid[(i+1)%n, j] +
-                    grid[(i-1)%n, (j-1)%n] + grid[(i-1)%n, (j+1)%n] +
-                    grid[(i+1)%n, (j-1)%n] + grid[(i+1)%n, (j+1)%n])/255)
+        return int(grid[i, (j-1)%n] + grid[i, (j+1)%n] +
+                   grid[(i-1)%n, j] + grid[(i+1)%n, j] +
+                   grid[(i-1)%n, (j-1)%n] + grid[(i-1)%n, (j+1)%n] +
+                   grid[(i+1)%n, (j-1)%n] + grid[(i+1)%n, (j+1)%n])
 
     def __survive(self, new_grid, grid, i , j, total):
         if grid[i, j]  == self.on and ((total < 2) or (total > 3)):
@@ -50,6 +51,6 @@ class GameOfLife(object):
 
     def run_animation(self, n):
         grid = self.__random_grid(n)
-        image = self.axis.imshow(grid)
+        image = self.axis.imshow(grid, cmap='Greys',  interpolation='nearest')
         ani = animation.FuncAnimation(self.figure, self.__preupdate, fargs=(image,grid, n, ), interval=40)
         plt.show()
